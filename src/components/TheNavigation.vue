@@ -6,7 +6,7 @@
             </div>
             <ul class="nav navbar-nav">
                 <li v-for="item in menuItems" :key="item.title">
-                    <a href="#">{{ item.title }}</a>
+                    <a :href="item.path">{{ item.title }}</a>
                 </li>
             </ul>
         </div>
@@ -17,9 +17,9 @@
         data() {
             return {
                 menuItems: [
-                    {title: 'Login'},
-                    {title: 'Logout'},
-                    {title: 'Properties'}
+                    {title: 'Login', path: '/login'},
+                    {title: 'Logout', path: '/logout'},
+                    {title: 'Properties', path: '/properties'}
                 ]
             }
         }

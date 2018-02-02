@@ -5,11 +5,11 @@
         <div class="container">
             <router-view></router-view>
 
-            <div class="row">
-                <div class="col-sm-12">
-                    <the-login></the-login>
-                </div>
-            </div>
+            <!--<div class="row">-->
+                <!--<div class="col-sm-12">-->
+                    <!--<the-login></the-login>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
     </div>
 </template>

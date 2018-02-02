@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import store from './store'
+import router from './router';
 import * as firebase from 'firebase'
 
 import 'jquery/dist/jquery.min';
@@ -12,6 +13,7 @@ new Vue({
     el: '#app',
     render: h => h(App),
     store,
+    router,
     created() {
         firebase.initializeApp({
             apiKey: "AIzaSyAhoMJjTmMBRUuRdH_RUj8A17U599Qy0jA",
