@@ -17,6 +17,8 @@
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
     </ul>
     <test></test>
+
+    <input type="button" class="btn btn-primary" value="Hello   bootstrap">
   </div>
 </template>
 

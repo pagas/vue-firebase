@@ -3,6 +3,9 @@ import App from './App.vue'
 import store from './store'
 import * as firebase from 'firebase'
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './css/main.css';
+
 new Vue({
     el: '#app',
     render: h => h(App),
