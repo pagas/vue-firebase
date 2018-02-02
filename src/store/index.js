@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as firebase from 'firebase'
+import firestore from '../firestoreInit';
 
 Vue.use(Vuex)
 
@@ -97,7 +98,21 @@ export default new Vuex.Store({
 
         },
         createProperty({commit}, payload) {
-
+            firestore.collection('properties').add(payload)
+                .then(response =>{ console.log('created', response)})
+                .catch(error => { console.log('error creating', error)});
+        },
+        loadProperties({commit}) {
+            return firestore.collection('properties').get().then(snapshot => {
+                let result = [];
+                snapshot.forEach(doc => {
+                    result.push({...doc.data(), id: doc.id});
+                })
+                return result;
+            });
+        },
+        removeProperty({commit}, propertyId) {
+            return firestore.collection('properties').doc(propertyId).delete();
         }
     }
 })

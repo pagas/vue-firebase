@@ -9,6 +9,11 @@
             </div>
 
             <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" v-model="property.description" class="form-control" id="description" placeholder="">
+            </div>
+
+            <div class="form-group">
                 <label for="title">Address</label>
                 <input type="text" v-model="property.address" class="form-control" id="address" placeholder="">
             </div>
@@ -29,13 +34,15 @@
             return {
                 property: {
                     title: '',
-                    address: ''
+                    address: '',
+                    description: ''
                 }
             }
         },
         methods: {
             onCreateProperty() {
                 this.$store.dispatch('createProperty', this.property);
+                this.$router.push('/properties')
             }
         }
     }
