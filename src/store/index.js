@@ -95,6 +95,9 @@ export default new Vuex.Store({
         },
         fetchUserData({commit, getter}) {
 
+        },
+        createProperty({commit}, payload) {
+
         }
     }
 })

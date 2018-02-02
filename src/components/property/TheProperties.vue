@@ -12,6 +12,11 @@
 
             }
         },
+        computed: {
+            properties() {
+
+            }
+        },
         methods: {
             addProperty() {
                 this.$router.push('/property/new')
