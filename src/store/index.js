@@ -7,6 +7,11 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         user: null,
+        properties: [
+            {id: 1, title: 'first property'},
+            {id: 2, title: 'second property'},
+            {id: 3, title: 'third property'}
+        ],
         loading: null,
         authError: null,
         initialized: null
@@ -31,6 +36,10 @@ export default new Vuex.Store({
         },
         isLoggedIn(state) {
             return state.user != null;
+        },
+        loadedProperties(state) {
+            // we can do soring if we want to get sorted properties
+            return state.properties;
         }
     },
     actions: {

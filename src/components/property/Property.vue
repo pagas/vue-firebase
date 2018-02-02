@@ -1,6 +1,7 @@
 <template>
     <div>
-        <h1>The properties page</h1>
+        <h1>Property</h1>
+
     </div>
 </template>
 
