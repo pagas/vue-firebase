@@ -16,13 +16,24 @@
     export default {
         data() {
             return {
-                menuItems: [
+            }
+        },
+        computed: {
+            menuItems() {
+                let menuItems =  [
                     {title: 'Login', path: '/login'},
-                    {title: 'Logout', path: '/logout'},
-                    {title: 'Properties', path: '/properties'}
-                ]
+                ];
+                if (this.userIsAuthenticated) {
+                    menuItems =  [
+                        {title: 'Logout', path: '/logout'},
+                        {title: 'Properties', path: '/properties'}
+                    ];
+                }
+                return menuItems;
+            },
+            userIsAuthenticated() {
+                return this.$store.getters.user != null;
             }
         }
-
     }
 </script>

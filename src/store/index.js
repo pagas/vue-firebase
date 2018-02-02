@@ -6,15 +6,22 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        count: 0,
-        user: null
+        user: null,
+        loading: null,
+        authError: null
     },
     mutations: {
-        increment (state) {
-            state.count++
-        },
         setUser(state, payload) {
             state.user = payload;
+        },
+        setLoading(state, payload) {
+            state.loading = payload;
+        },
+        setAuthError(state, payload) {
+            state.authError = payload;
+        },
+        clearAuthError(state) {
+            state.authError = null;
         }
     },
     getters: {
@@ -24,6 +31,7 @@ export default new Vuex.Store({
     },
     actions: {
         singUserUp({commit}, payload) {
+            commit('clearAuthError');
             firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
                 .then(user => {
                     const newUser = {
@@ -32,10 +40,11 @@ export default new Vuex.Store({
                     commit('setUser', newUser);
                 })
                 .catch(error => {
-                    console.log(error);
+                    commit('setAuthError', error);
                 })
         },
         singUserIn({commit}, payload) {
+            commit('clearAuthError');
             firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
                 .then(user => {
                     const newUser = {
@@ -44,7 +53,7 @@ export default new Vuex.Store({
                     commit('setUser', newUser);
                 })
                 .catch(error => {
-                    console.log(error);
+                    commit('setAuthError', error);
                 })
         }
     }
