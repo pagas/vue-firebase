@@ -45,7 +45,7 @@
         watch: {
             user(value) {
                 if (value != null) {
-                    this.$router.push('/');
+                    this.$router.push('/properties');
                 }
             }
         },

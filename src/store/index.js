@@ -8,7 +8,8 @@ export default new Vuex.Store({
     state: {
         user: null,
         loading: null,
-        authError: null
+        authError: null,
+        initialized: null
     },
     mutations: {
         setUser(state, payload) {
@@ -27,9 +28,27 @@ export default new Vuex.Store({
     getters: {
         user(state) {
             return state.user;
+        },
+        isLoggedIn(state) {
+            return state.user != null;
         }
     },
     actions: {
+        init({ commit, state }) {
+            if (state.initialized) {
+                return;
+            }
+            state.initialized = true;
+
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+                    console.log(user);
+                    commit('setUser', user);
+                } else {
+                    commit('setUser', null);
+                }
+            });
+        },
         singUserUp({commit}, payload) {
             commit('clearAuthError');
             firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
@@ -55,6 +74,18 @@ export default new Vuex.Store({
                 .catch(error => {
                     commit('setAuthError', error);
                 })
+        },
+        singOut({commit}) {
+            firebase.auth().signOut();
+            commit('setUser', null);
+        },
+        autoSignIn({commit}, payload) {
+            commit('setUser', {
+                id: payload.uid
+            })
+        },
+        fetchUserData({commit, getter}) {
+
         }
     }
 })

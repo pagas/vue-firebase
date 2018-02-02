@@ -1,15 +1,11 @@
 <template>
     <div id="app">
-        <the-navigation></the-navigation>
-
         <div class="container">
+            <the-navigation></the-navigation>
+
             <router-view></router-view>
 
-            <!--<div class="row">-->
-                <!--<div class="col-sm-12">-->
-                    <!--<the-login></the-login>-->
-                <!--</div>-->
-            <!--</div>-->
+            isLoggedIn :: {{isLoggedIn}}
         </div>
     </div>
 </template>
@@ -24,6 +20,14 @@
         data() {
             return {
                 msg: 'Welcome to Your Vue.js App'
+            }
+        },
+        computed: {
+            user() {
+                return this.$store.getters.user;
+            },
+            isLoggedIn() {
+                return this.$store.getters.isLoggedIn
             }
         },
         components: {

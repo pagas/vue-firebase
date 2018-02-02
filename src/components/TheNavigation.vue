@@ -2,11 +2,11 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#">WebSiteName</a>
+                <router-link to="/">WebSiteName</router-link>
             </div>
             <ul class="nav navbar-nav">
                 <li v-for="item in menuItems" :key="item.title">
-                    <a :href="item.path">{{ item.title }}</a>
+                    <router-link :to="item.path">{{ item.title }}</router-link>
                 </li>
             </ul>
         </div>
@@ -20,7 +20,7 @@
         },
         computed: {
             menuItems() {
-                let menuItems =  [
+                var menuItems =  [
                     {title: 'Login', path: '/login'},
                 ];
                 if (this.userIsAuthenticated) {
@@ -34,6 +34,8 @@
             userIsAuthenticated() {
                 return this.$store.getters.user != null;
             }
+        },
+        methods: {
         }
     }
 </script>

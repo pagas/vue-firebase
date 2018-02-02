@@ -23,5 +23,6 @@ new Vue({
             storageBucket: "pauliusapp-f0c4f.appspot.com",
             messagingSenderId: "645105065174"
         });
+        this.$store.dispatch('init');
     }
 })
