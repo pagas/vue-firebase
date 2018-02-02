@@ -1,5 +1,5 @@
 <template>
-    <div>test component</div>
+    <div>test component!!!!</div>
 </template>
 
 <script>
@@ -7,7 +7,7 @@
         name: 'app',
         data () {
             return {
-                msg: 'Welcome to Your Vue.js App'
+                msg: 'Welcome to Your Vue.js App!!!'
             }
         }
     }
