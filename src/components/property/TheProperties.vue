@@ -13,6 +13,7 @@
                 <p class="card-text">{{property.description}}</p>
                 <div>
                     <button class="btn btn-primary" @click="removeProperty(property.id)">Remove</button>
+                    <button class="btn btn-primary" @click="editProperty(property.id)">Edit</button>
                 </div>
             </div>
         </div>
@@ -35,6 +36,9 @@
             removeProperty(propertyId) {
                 this.$store.dispatch('removeProperty', propertyId);
                 this.loadProperties();
+            },
+            editProperty(propertyId) {
+                this.$router.push('/property/edit/' + propertyId);
             },
             loadProperties() {
                 this.$store.dispatch('loadProperties').then(response => {

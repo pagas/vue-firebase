@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import TheLogin from '../components/TheLogin.vue'
 import TheProperties from '../components/property/TheProperties.vue'
 import AddProperty from '../components/property/AddProperty.vue'
+import EditProperty from '../components/property/EditProperty.vue'
 import Property from '../components/property/Property.vue'
 import store from '../store';
 
@@ -26,9 +27,16 @@ export default new VueRouter({
             component: AddProperty
         },
         {
-            path: '/property/:id',
+            path: '/property/:propertyId',
             name: 'property',
-            component: Property
+            component: Property,
+            props: true
+        },
+        {
+            path: '/property/edit/:propertyId',
+            name: 'editProperty',
+            component: EditProperty,
+            props: true
         },
         {
             path: '/logout',

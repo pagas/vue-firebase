@@ -102,6 +102,11 @@ export default new Vuex.Store({
                 .then(response =>{ console.log('created', response)})
                 .catch(error => { console.log('error creating', error)});
         },
+        editProperty({commit}, property) {
+            firestore.collection('properties').doc(property.id).update(property)
+                .then(response =>{ console.log('created', response)})
+                .catch(error => { console.log('error creating', error)});
+        },
         loadProperties({commit}) {
             return firestore.collection('properties').get().then(snapshot => {
                 let result = [];
@@ -109,6 +114,11 @@ export default new Vuex.Store({
                     result.push({...doc.data(), id: doc.id});
                 })
                 return result;
+            });
+        },
+        loadProperty({commit}, propertyId) {
+            return firestore.collection('properties').doc(propertyId).get().then(doc => {
+                return {...doc.data(), id: doc.id};
             });
         },
         removeProperty({commit}, propertyId) {
