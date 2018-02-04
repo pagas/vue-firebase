@@ -6,6 +6,7 @@ import AddProperty from '../components/property/AddProperty.vue'
 import EditProperty from '../components/property/EditProperty.vue'
 import Property from '../components/property/Property.vue'
 import store from '../store';
+import AuthGuard from './auth-guard'
 
 Vue.use(VueRouter)
 
@@ -19,24 +20,28 @@ export default new VueRouter({
         {
             path: '/properties',
             name: 'properties',
-            component: TheProperties
+            component: TheProperties,
+            beforeEnter: AuthGuard
         },
         {
             path: '/property/new',
             name: 'addProperty',
-            component: AddProperty
+            component: AddProperty,
+            beforeEnter: AuthGuard
         },
         {
             path: '/property/:propertyId',
             name: 'property',
             component: Property,
-            props: true
+            props: true,
+            beforeEnter: AuthGuard
         },
         {
             path: '/property/edit/:propertyId',
             name: 'editProperty',
             component: EditProperty,
-            props: true
+            props: true,
+            beforeEnter: AuthGuard
         },
         {
             path: '/logout',
