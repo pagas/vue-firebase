@@ -20,7 +20,11 @@
 
             <div class="form-group">
                 <label for="image">Image</label>
-                <input type="file" class="form-control-file" id="image">
+                <div v-if="property.imageUrl">
+                    <img :src="property.imageUrl" style="width:100px; height:100px;">
+                </div>
+                <input type="file" accept="image/*"
+                       class="form-control-file" id="image" @change="filePicked($event)">
             </div>
 
             <button type="submit" class="btn btn-primary">Edit</button>
@@ -40,6 +44,19 @@
             editProperty() {
                 this.$store.dispatch('editProperty', this.property);
                 this.$router.push('/property/' + this.property.id);
+            },
+            filePicked(event) {
+                const files = event.target.files;
+                let filename = files[0].name;
+                if (filename.lastIndexOf('.') <= 0) {
+                    return alert('Please add valid file');
+                }
+                const fileReader = new FileReader();
+                fileReader.addEventListener('load', () => {
+                    this.imageUrl = fileReader.result;
+                });
+                fileReader.readAsDataURL(files[0]);
+                this.property.image = files[0];
             }
         },
         created() {

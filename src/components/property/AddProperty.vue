@@ -20,7 +20,7 @@
 
             <div class="form-group">
                 <label for="image">Image</label>
-                <input type="file" class="form-control-file" id="image">
+                <input type="file" @change="pickFile($event)" class="form-control-file" id="image">
             </div>
 
             <button type="submit" class="btn btn-primary">Create</button>
@@ -43,6 +43,19 @@
             onCreateProperty() {
                 this.$store.dispatch('createProperty', this.property);
                 this.$router.push('/properties')
+            },
+            pickFile(event) {
+                const files = event.target.files;
+                let filename = files[0].name;
+                if (filename.lastIndexOf('.') <= 0) {
+                    return alert('Please add valid file');
+                }
+//                const fileReader = new FileReader();
+//                fileReader.addEventListener('load', () => {
+//                    this.imageUrl = fileReader.result;
+//                });
+//                fileReader.readAsDataURL(files[0]);
+                this.property.image = files[0];
             }
         }
     }

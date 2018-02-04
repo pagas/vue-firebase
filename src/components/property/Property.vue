@@ -7,6 +7,9 @@
             <br />
             <label>Description:</label>
             {{property.description}}
+            <div v-if="property.imageUrl">
+                <img :src="property.imageUrl" style="width:100px; height:100px;">
+            </div>
         </div>
     </div>
 </template>

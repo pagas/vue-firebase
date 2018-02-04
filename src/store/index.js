@@ -98,15 +98,44 @@ export default new Vuex.Store({
         fetchUserData({commit, getter}) {
 
         },
-        createProperty({commit}, payload) {
-            payload.creatorId = this.getters.user.id;
-            firestore.collection('properties').add(payload)
-                .then(response =>{ console.log('created', response)})
+        createProperty({commit}, property) {
+            property.creatorId = this.getters.user.id;
+            var propertyId;
+            var image = property.image;
+            delete property.image;
+            firestore.collection('properties').add(property)
+                .then(data => {
+                    propertyId = data.id;
+                    const filename = image.name;
+                    const ext = filename.slice(filename.lastIndexOf('.'));
+                    return firebase.storage().ref('properties/' + propertyId + ext).put(image);
+                })
+                .then(fileData => {
+                    const imageUrl = fileData.metadata.downloadURLs[0];
+                    return firestore.collection('properties').doc(propertyId).update({
+                        imageUrl: imageUrl
+                    });
+                })
                 .catch(error => { console.log('error creating', error)});
         },
         editProperty({commit}, property) {
+            var propertyId = property.id;
+            var image = property.image;
+            delete property.image;
             firestore.collection('properties').doc(property.id).update(property)
-                .then(response =>{ console.log('created', response)})
+                .then(data =>{
+                    if (image) {
+                        const filename = image.name;
+                        const ext = filename.slice(filename.lastIndexOf('.'));
+                        return firebase.storage().ref('properties/' + propertyId + ext).put(image);
+                    }
+                })
+                .then(fileData => {
+                    const imageUrl = fileData.metadata.downloadURLs[0];
+                    return firestore.collection('properties').doc(propertyId).update({
+                        imageUrl: imageUrl
+                    });
+                })
                 .catch(error => { console.log('error creating', error)});
         },
         loadProperties({commit}) {
