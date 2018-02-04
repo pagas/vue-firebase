@@ -52,8 +52,9 @@ export default new Vuex.Store({
 
             firebase.auth().onAuthStateChanged(function (user) {
                 if (user) {
-                    console.log(user);
-                    commit('setUser', user);
+                    commit('setUser', {
+                        id : user.uid
+                    });
                 } else {
                     commit('setUser', null);
                 }
@@ -98,6 +99,7 @@ export default new Vuex.Store({
 
         },
         createProperty({commit}, payload) {
+            payload.creatorId = this.getters.user.id;
             firestore.collection('properties').add(payload)
                 .then(response =>{ console.log('created', response)})
                 .catch(error => { console.log('error creating', error)});
