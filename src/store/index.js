@@ -8,13 +8,9 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         user: null,
-        properties: [
-            {id: 1, title: 'first property'},
-            {id: 2, title: 'second property'},
-            {id: 3, title: 'third property'}
-        ],
-        loading: null,
-        authError: null,
+        properties: [],
+        loading: null, // can be later implemented when ever asynchronous call is made we can show spinner
+        authError: null, // can be later implemented show authentication errors in the page
         initialized: null
     },
     mutations: {
@@ -44,56 +40,38 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        init({ commit, state }) {
+        init({commit, state}) {
             if (state.initialized) {
                 return;
             }
             state.initialized = true;
-
             firebase.auth().onAuthStateChanged(function (user) {
                 if (user) {
-                    commit('setUser', {
-                        id : user.uid
-                    });
+                    firestore.collection('users').doc(user.uid).get().then(doc => {
+                        commit('setUser', {
+                            id: user.uid,
+                            email: user.email,
+                            name: doc.data().name
+                        });
+                    })
                 } else {
                     commit('setUser', null);
                 }
             });
         },
         singUserUp({commit}, payload) {
-            commit('clearAuthError');
-            firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
+            return firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
                 .then(user => {
-                    const newUser = {
-                        id : user.uid
-                    }
-                    commit('setUser', newUser);
-                })
-                .catch(error => {
-                    commit('setAuthError', error);
-                })
+                    return firestore.collection('users').doc(user.uid).set({
+                        name: payload.name
+                    }, {merge: true});
+                });
         },
         singUserIn({commit}, payload) {
-            commit('clearAuthError');
-            firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
-                .then(user => {
-                    const newUser = {
-                        id : user.uid
-                    }
-                    commit('setUser', newUser);
-                })
-                .catch(error => {
-                    commit('setAuthError', error);
-                })
+            firebase.auth().signInWithEmailAndPassword(payload.email, payload.password);
         },
         singOut({commit}) {
             firebase.auth().signOut();
-            commit('setUser', null);
-        },
-        autoSignIn({commit}, payload) {
-            commit('setUser', {
-                id: payload.uid
-            })
         },
         fetchUserData({commit, getter}) {
 
@@ -116,14 +94,16 @@ export default new Vuex.Store({
                         imageUrl: imageUrl
                     });
                 })
-                .catch(error => { console.log('error creating', error)});
+                .catch(error => {
+                    console.log('error creating', error)
+                });
         },
         editProperty({commit}, property) {
             var propertyId = property.id;
             var image = property.image;
             delete property.image;
             firestore.collection('properties').doc(property.id).update(property)
-                .then(data =>{
+                .then(data => {
                     if (image) {
                         const filename = image.name;
                         const ext = filename.slice(filename.lastIndexOf('.'));
@@ -136,7 +116,9 @@ export default new Vuex.Store({
                         imageUrl: imageUrl
                     });
                 })
-                .catch(error => { console.log('error creating', error)});
+                .catch(error => {
+                    console.log('error creating', error)
+                });
         },
         loadProperties({commit}) {
             return firestore.collection('properties').get().then(snapshot => {

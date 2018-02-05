@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import TheLogin from '../components/TheLogin.vue'
+import TheSignUp from '../components/TheSignUp.vue'
 import TheProperties from '../components/property/TheProperties.vue'
 import AddProperty from '../components/property/AddProperty.vue'
 import EditProperty from '../components/property/EditProperty.vue'
@@ -16,6 +17,11 @@ export default new VueRouter({
             path: '/login',
             name: 'login',
             component: TheLogin
+        },
+        {
+            path: '/signup',
+            name: 'signup',
+            component: TheSignUp
         },
         {
             path: '/properties',
