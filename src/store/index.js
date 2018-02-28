@@ -2,13 +2,16 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import * as firebase from 'firebase'
 import firestore from '../firestoreInit';
+import properties from './modules/properties';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+    modules: [
+        properties
+    ],
     state: {
         user: null,
-        properties: [],
         loading: null, // can be later implemented when ever asynchronous call is made we can show spinner
         authError: null, // can be later implemented show authentication errors in the page
         initialized: null
@@ -33,10 +36,6 @@ export default new Vuex.Store({
         },
         isLoggedIn(state) {
             return state.user != null;
-        },
-        loadedProperties(state) {
-            // we can do soring if we want to get sorted properties
-            return state.properties;
         }
     },
     actions: {
@@ -76,66 +75,5 @@ export default new Vuex.Store({
         fetchUserData({commit, getter}) {
 
         },
-        createProperty({commit}, property) {
-            property.creatorId = this.getters.user.id;
-            var propertyId;
-            var image = property.image;
-            delete property.image;
-            firestore.collection('properties').add(property)
-                .then(data => {
-                    propertyId = data.id;
-                    const filename = image.name;
-                    const ext = filename.slice(filename.lastIndexOf('.'));
-                    return firebase.storage().ref('properties/' + propertyId + ext).put(image);
-                })
-                .then(fileData => {
-                    const imageUrl = fileData.metadata.downloadURLs[0];
-                    return firestore.collection('properties').doc(propertyId).update({
-                        imageUrl: imageUrl
-                    });
-                })
-                .catch(error => {
-                    console.log('error creating', error)
-                });
-        },
-        editProperty({commit}, property) {
-            var propertyId = property.id;
-            var image = property.image;
-            delete property.image;
-            firestore.collection('properties').doc(property.id).update(property)
-                .then(data => {
-                    if (image) {
-                        const filename = image.name;
-                        const ext = filename.slice(filename.lastIndexOf('.'));
-                        return firebase.storage().ref('properties/' + propertyId + ext).put(image);
-                    }
-                })
-                .then(fileData => {
-                    const imageUrl = fileData.metadata.downloadURLs[0];
-                    return firestore.collection('properties').doc(propertyId).update({
-                        imageUrl: imageUrl
-                    });
-                })
-                .catch(error => {
-                    console.log('error creating', error)
-                });
-        },
-        loadProperties({commit}) {
-            return firestore.collection('properties').get().then(snapshot => {
-                let result = [];
-                snapshot.forEach(doc => {
-                    result.push({...doc.data(), id: doc.id});
-                })
-                return result;
-            });
-        },
-        loadProperty({commit}, propertyId) {
-            return firestore.collection('properties').doc(propertyId).get().then(doc => {
-                return {...doc.data(), id: doc.id};
-            });
-        },
-        removeProperty({commit}, propertyId) {
-            return firestore.collection('properties').doc(propertyId).delete();
-        }
     }
 })

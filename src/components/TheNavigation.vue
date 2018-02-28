@@ -22,12 +22,13 @@
             menuItems() {
                 var menuItems =  [
                     {title: 'Login', path: '/login'},
-                    {title: 'Sign Up', path: '/signup'},
+//                    {title: 'Sign Up', path: '/signup'},
                 ];
                 if (this.userIsAuthenticated) {
                     menuItems =  [
                         {title: 'Logout', path: '/logout'},
-                        {title: 'Properties', path: '/properties'}
+                        {title: 'Properties', path: '/properties'},
+                        {title: 'Words', path: '/words'}
                     ];
                 }
                 return menuItems;

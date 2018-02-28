@@ -6,6 +6,7 @@ import TheProperties from '../components/property/TheProperties.vue'
 import AddProperty from '../components/property/AddProperty.vue'
 import EditProperty from '../components/property/EditProperty.vue'
 import Property from '../components/property/Property.vue'
+import TheWords from '../components/words/TheWords.vue';
 import store from '../store';
 import AuthGuard from './auth-guard'
 
@@ -47,6 +48,12 @@ export default new VueRouter({
             name: 'editProperty',
             component: EditProperty,
             props: true,
+            beforeEnter: AuthGuard
+        },
+        {
+            path: '/words',
+            name: 'words',
+            component: TheWords,
             beforeEnter: AuthGuard
         },
         {
