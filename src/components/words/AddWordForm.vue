@@ -45,7 +45,10 @@
         },
         methods: {
             addWord() {
-                console.log('add word');
+                this.$store.dispatch('addWord', this.word)
+                    .then(() => {
+                        console.log('successfully added')
+                    });
             },
         },
         created() {

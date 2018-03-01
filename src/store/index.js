@@ -3,12 +3,14 @@ import Vuex from 'vuex'
 import * as firebase from 'firebase'
 import firestore from '../firestoreInit';
 import properties from './modules/properties';
+import words from './modules/words';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
     modules: [
-        properties
+        properties,
+        words
     ],
     state: {
         user: null,

@@ -5,14 +5,15 @@
 
         <div class="card" v-for="word in words">
             <div class="card-header">
-                <router-link :to="'/property/' + property.id">{{property.title}}</router-link>
+                <!--<router-link :to="'/property/' + property.id">{{property.title}}</router-link>-->
+                {{word.word}}
             </div>
             <div class="card-body">
-                <p class="card-text">{{property.description}}</p>
-                <div>
-                    <button class="btn btn-primary" @click="removeProperty(property.id)">Remove</button>
-                    <button class="btn btn-primary" @click="editProperty(property.id)">Edit</button>
-                </div>
+                <p class="card-text">{{word.translation}}</p>
+                <!--<div>-->
+                    <!--<button class="btn btn-primary" @click="removeProperty(property.id)">Remove</button>-->
+                    <!--<button class="btn btn-primary" @click="editProperty(property.id)">Edit</button>-->
+                <!--</div>-->
             </div>
         </div>
 
@@ -34,13 +35,13 @@
                 this.$store.dispatch('removeWord', wordId);
             },
             loadWords() {
-                this.$store.dispatch('loadWords').then(response => {
+                this.$store.dispatch('loadWords', this.$store.getters.user.id).then(response => {
                     this.words = response;
                 });
             }
         },
         created() {
-            this.loadWords()
+            this.loadWords();
         },
         components: {
             AddWordForm: AddWordForm
