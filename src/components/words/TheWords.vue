@@ -8,13 +8,13 @@
                 <!--<router-link :to="'/property/' + property.id">{{property.title}}</router-link>-->
                 {{word.word}}
             </div>
-            <div class="card-body">
-                <p class="card-text">{{word.translation}}</p>
-                <!--<div>-->
-                    <!--<button class="btn btn-primary" @click="removeProperty(property.id)">Remove</button>-->
-                    <!--<button class="btn btn-primary" @click="editProperty(property.id)">Edit</button>-->
-                <!--</div>-->
-            </div>
+            <!--<div class="card-body">-->
+                <!--<p class="card-text">{{word.translation}}</p>-->
+                <!--&lt;!&ndash;<div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<button class="btn btn-primary" @click="removeProperty(property.id)">Remove</button>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<button class="btn btn-primary" @click="editProperty(property.id)">Edit</button>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--</div>-->
         </div>
 
     </div>
@@ -22,10 +22,12 @@
 
 <script>
     import AddWordForm from './AddWordForm.vue';
+    import wordsApi from '../../api/words';
     export default {
         data () {
             return {
-                words: []
+                words: [],
+                wordsListener: null
             }
         },
         computed: {
@@ -41,7 +43,14 @@
             }
         },
         created() {
-            this.loadWords();
+            this.wordsListener = wordsApi.listenWords(this.$store.getters.user.id, (response) => {
+                this.words = response;
+            })
+        },
+        destroyed() {
+            if (this.wordsListener) {
+                this.wordsListener();
+            }
         },
         components: {
             AddWordForm: AddWordForm
