@@ -28,7 +28,8 @@
                     menuItems =  [
                         {title: 'Logout', path: '/logout'},
                         {title: 'Properties', path: '/properties'},
-                        {title: 'Words', path: '/words'}
+                        {title: 'Words', path: '/words'},
+                        {title: 'Chat', path: '/chat'},
                     ];
                 }
                 return menuItems;
