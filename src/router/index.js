@@ -8,6 +8,7 @@ import EditProperty from '../components/property/EditProperty.vue'
 import Property from '../components/property/Property.vue'
 import TheWords from '../components/words/TheWords.vue';
 import TheConversations from '../components/conversations/TheConversationList.vue';
+import ConversationView from '../components/conversations/ConversationView.vue';
 import store from '../store';
 import AuthGuard from './auth-guard'
 
@@ -61,6 +62,13 @@ export default new VueRouter({
             path: '/conversations',
             name: 'conversations',
             component: TheConversations,
+            beforeEnter: AuthGuard
+        },
+        {
+            path: '/conversation/:conversationId',
+            name: 'viewConversations',
+            component: ConversationView,
+            props: true,
             beforeEnter: AuthGuard
         },
         {

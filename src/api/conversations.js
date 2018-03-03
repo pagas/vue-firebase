@@ -2,7 +2,7 @@ import firestore from '../firestoreInit';
 
 export default {
     listenToConversations(userId, callback) {
-        return firestore.collection('conversations').where('userId', '==', userId).onSnapshot(snapshot => {
+        return firestore.collection('conversations').where('userIds.'+userId, '==', true).onSnapshot(snapshot => {
             let result = [];
             snapshot.forEach(doc => {
                 result.push({...doc.data(), id: doc.id});

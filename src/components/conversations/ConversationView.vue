@@ -25,6 +25,7 @@
 <script>
     import chatApi from '../../api/chat';
     export default {
+        props:['conversationId'],
         data () {
             return {
                 body: '',
