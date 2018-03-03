@@ -25,6 +25,9 @@ const actions = {
             })
             return result;
         });
+    },
+    removeWord({commit}, wordId) {
+        return firestore.collection('words').doc(wordId).delete();
     }
 };
 

@@ -6,7 +6,8 @@
         <div class="card" v-for="word in words">
             <div class="card-header">
                 <!--<router-link :to="'/property/' + property.id">{{property.title}}</router-link>-->
-                {{word.word}}
+                {{word.word}} / {{word.translation}} / {{word.tags}}
+                <button @click="removeWord(word.id)">Remove</button>
             </div>
             <!--<div class="card-body">-->
                 <!--<p class="card-text">{{word.translation}}</p>-->
