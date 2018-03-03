@@ -1,8 +1,9 @@
 import firestore from '../firestoreInit';
+const collectionName = 'chat';
 
 export default {
-    listenToMessages(userId, callback) {
-        return firestore.collection('chat').where('userId', '==', userId).onSnapshot(snapshot => {
+    listenToMessages(conversationId, callback) {
+        return firestore.collection(collectionName).where('conversationId', '==', conversationId).onSnapshot(snapshot => {
             let result = [];
             snapshot.forEach(doc => {
                 result.push({...doc.data(), id: doc.id});
@@ -11,9 +12,9 @@ export default {
         })
     },
     addMessage(message) {
-        return firestore.collection('chat').add(message);
+        return firestore.collection(collectionName).add(message);
     },
     removeMessage(messageId) {
-        return firestore.collection('chat').doc(messageId).delete();
+        return firestore.collection(collectionName).doc(messageId).delete();
     }
 }

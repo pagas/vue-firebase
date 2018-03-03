@@ -41,7 +41,7 @@
         methods: {
             addConversation() {
                 chatApi.addMessage({
-                    conversationId: 1,
+                    conversationId: this.conversationId,
                     userId: this.$store.getters.user.id,
                     body: this.body,
                     createdDate: Date.now()
@@ -53,7 +53,7 @@
             }
         },
         created() {
-            this.conversationListener = chatApi.listenToMessages(this.$store.getters.user.id, (response) => {
+            this.conversationListener = chatApi.listenToMessages(this.conversationId, (response) => {
                 this.messages = response;
             })
         },
