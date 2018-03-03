@@ -7,7 +7,7 @@ import AddProperty from '../components/property/AddProperty.vue'
 import EditProperty from '../components/property/EditProperty.vue'
 import Property from '../components/property/Property.vue'
 import TheWords from '../components/words/TheWords.vue';
-import TheChat from '../components/chat/TheChat.vue';
+import TheConversations from '../components/conversations/TheConversationList.vue';
 import store from '../store';
 import AuthGuard from './auth-guard'
 
@@ -58,9 +58,9 @@ export default new VueRouter({
             beforeEnter: AuthGuard
         },
         {
-            path: '/chat',
-            name: 'chat',
-            component: TheChat,
+            path: '/conversations',
+            name: 'conversations',
+            component: TheConversations,
             beforeEnter: AuthGuard
         },
         {

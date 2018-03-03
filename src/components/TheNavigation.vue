@@ -29,7 +29,7 @@
                         {title: 'Logout', path: '/logout'},
                         {title: 'Properties', path: '/properties'},
                         {title: 'Words', path: '/words'},
-                        {title: 'Chat', path: '/chat'},
+                        {title: 'Conversations', path: '/conversations'},
                     ];
                 }
                 return menuItems;
