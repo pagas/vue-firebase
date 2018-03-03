@@ -1,5 +1,5 @@
 import firestore from '../firestoreInit';
-const collectionName = 'chat';
+const collectionName = 'messages';
 
 export default {
     listenToMessages(conversationId, callback) {

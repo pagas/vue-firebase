@@ -23,7 +23,7 @@
 </template>
 
 <script>
-    import chatApi from '../../api/chat';
+    import messagesApi from '../../api/messages';
     export default {
         props:['conversationId'],
         data () {
@@ -40,7 +40,7 @@
         },
         methods: {
             addConversation() {
-                chatApi.addMessage({
+                messagesApi.addMessage({
                     conversationId: this.conversationId,
                     userId: this.$store.getters.user.id,
                     body: this.body,
@@ -49,11 +49,11 @@
                 this.body = '';
             },
             removeConversation(messageId) {
-                chatApi.removeConversation(messageId);
+                messagesApi.removeConversation(messageId);
             }
         },
         created() {
-            this.conversationListener = chatApi.listenToMessages(this.conversationId, (response) => {
+            this.conversationListener = messagesApi.listenToMessages(this.conversationId, (response) => {
                 this.messages = response;
             })
         },
