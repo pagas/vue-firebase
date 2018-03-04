@@ -1,22 +1,32 @@
 <template>
-    <div>
-        <div class="card" v-for="message in messages">
-            <div class="card-header">
-                <!--<router-link :to="'/property/' + property.id">{{property.title}}</router-link>-->
-                {{message.id}} : {{message.body}} // {{message.createdDate}}
-                <button @click="removeConversation(message.id)">Remove</button>
+    <div class="row">
+        <div class="col-sm-7">
+            <div class="card" v-for="message in messages">
+                <div class="card-header">
+                    {{message.id}} : {{message.body}} // {{message.createdDate}}
+                    <button @click="removeConversation(message.id)">Remove</button>
+                </div>
             </div>
-        </div>
 
-        <form class="form-inline">
-            <div class="form-group">
-                <label>{{username}}</label>
+            <form class="form-inline">
+                <div class="form-group">
+                    <label>{{username}}</label>
+                </div>
+                <div class="form-group">
+                    <input v-model="body" type="text" class="form-control" id="exampleInputEmail2" placeholder="message">
+                </div>
+                <button type="submit" class="btn btn-default" @click.prevent="addConversation()">Send</button>
+            </form>
+        </div>
+        <div class="col-sm-7">
+            <div class="card" v-for="user in conversationUsers">
+                <div class="card-header">
+                    {{user.name}}
+                    <button @click="removeUser(user.id)">Remove</button>
+                </div>
             </div>
-            <div class="form-group">
-                <input v-model="body" type="text" class="form-control" id="exampleInputEmail2" placeholder="message">
-            </div>
-            <button type="submit" class="btn btn-default" @click.prevent="addConversation()">Send</button>
-        </form>
+            <button class="btn btn-default" @click.prevent="addUsers()">Add User</button>
+        </div>
 
 
     </div>
@@ -24,10 +34,16 @@
 
 <script>
     import messagesApi from '../../api/messages';
+    import userApi from '../../api/users';
+    import conversationApi from '../../api/conversations';
+
     export default {
         props:['conversationId'],
         data () {
             return {
+                availableUsers: [],
+                conversationUsers: [],
+                conversation: null,
                 body: '',
                 messages: [],
                 conversationListener: null
@@ -50,11 +66,23 @@
             },
             removeConversation(messageId) {
                 messagesApi.removeConversation(messageId);
+            },
+            addUsers() {
+
             }
         },
         created() {
             this.conversationListener = messagesApi.listenToMessages(this.conversationId, (response) => {
                 this.messages = response;
+            })
+            userApi.getUsers().then(response => {
+                this.availableUsers = response;
+            })
+
+            conversationApi.getConversation(this.conversationId).then(response => {
+                return this.conversation = response;
+            }).then( response => {
+
             })
         },
         destroyed() {
