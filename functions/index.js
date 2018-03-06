@@ -1,6 +1,6 @@
 const functions = require('firebase-functions');
 var admin = require("firebase-admin");
-var config = require("../src/config/exportFirebaseConfig");
+var config = require("./config/exportFirebaseConfig");
 
 admin.initializeApp(config);
 
@@ -21,12 +21,13 @@ exports.getConversation = functions.https.onRequest((request, response) => {
                 return doc.data();
             })
             .then(conversation => {
-
+                // get all data of users that are in the conversation
+                // form array of users that contains user name as well
                 let usersPromises = [];
                 for (let userId in conversation.userIds) {
-                    usersPromises.push(admin.database().ref('users/' + userId).once('value')
-                        .then(snapshot => {
-                            return snapshot.val();
+                    usersPromises.push(admin.firestore().collection('users').doc(userId).get()
+                        .then(doc => {
+                            return {name: doc.data().name, id: doc.id};
                         })
                     );
                 }
@@ -35,9 +36,15 @@ exports.getConversation = functions.https.onRequest((request, response) => {
                         return {id: user.id, name: user.name}
                     });
                     conversation.users = formatedUsers;
-                    respondJson(response, conversation);
+                    delete conversation.userIds;
                     return conversation;
+                }).then(conversation => {
+                    respondJson(response, conversation);
+                    return true;
                 });
+            })
+            .catch(error => {
+                console.log(error);
             })
     } else {
         response.status(500).send({error: 'Incorrect GET request'});
