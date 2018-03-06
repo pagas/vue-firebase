@@ -19,7 +19,7 @@ export default {
         return firestore.collection(collectionName).doc(conversationId).delete();
     },
     getConversation(conversationId) {
-        return firestore.collection(collectionName).doc(conversationId).then(doc => {
+        return firestore.collection(collectionName).doc(conversationId).get().then(doc => {
             return doc.data();
         })
     }
