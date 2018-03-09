@@ -1,6 +1,8 @@
 import firestore from '../firestoreInit';
-
+import Vue from 'vue';
+import config from '../config/firebaseConfig'
 const collectionName = 'conversations';
+
 
 export default {
     listenToConversations(userId, callback) {
@@ -19,8 +21,10 @@ export default {
         return firestore.collection(collectionName).doc(conversationId).delete();
     },
     getConversation(conversationId) {
-        return firestore.collection(collectionName).doc(conversationId).get().then(doc => {
-            return doc.data();
-        })
+        return Vue.http.get(config.functions + '/getConversation', {params: {conversationId: conversationId}})
+            .then(response => {
+                console.log('got conversations', reponse);
+                return response.body;
+            })
     }
 }
