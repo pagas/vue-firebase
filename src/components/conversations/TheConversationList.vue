@@ -22,6 +22,7 @@
 
 <script>
     import conversationApi from '../../api/conversations';
+    import conversationService from '../../services/conversation.service';
     export default {
         data () {
             return {
@@ -34,10 +35,9 @@
         },
         methods: {
             addConversation() {
-                const conversation = {name: this.name, userIds: {}};
+                const conversation = {name: this.name};
                 const userId = this.$store.getters.user.id;
-                conversation.userIds[userId] = true;
-                conversationApi.addConversation(conversation);
+                conversationService.addConversation(userId, conversation);
                 this.name = '';
             },
             openConversation(conversationId) {
@@ -48,7 +48,7 @@
             }
         },
         created() {
-            this.conversationListener = conversationApi.listenToConversations(this.$store.getters.user.id, (response) => {
+            this.conversationListener = conversationService.listenToNewConversations(this.$store.getters.user.id, (response) => {
                 this.conversations = response;
             })
         },

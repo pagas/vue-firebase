@@ -23,7 +23,12 @@ export default {
     getConversation(conversationId) {
         return Vue.http.get(config.functions + '/getConversation', {params: {conversationId: conversationId}})
             .then(response => {
-                console.log('got conversations', reponse);
+                return response.body;
+            })
+    },
+    getConversations(conversationIds) {
+        return Vue.http.post('/getConversations', {conversationIds: conversationIds})
+            .then(response => {
                 return response.body;
             })
     }

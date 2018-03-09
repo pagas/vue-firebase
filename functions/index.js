@@ -4,10 +4,6 @@ var config = require("./config/exportFirebaseConfig");
 
 admin.initializeApp(config);
 
-exports.helloWorld = functions.https.onRequest((request, response) => {
-    response.send('Hello World!');
-});
-
 function respondJson(response, output) {
     response.status(200).send(JSON.stringify(output, null, 3));
 }
@@ -50,6 +46,14 @@ exports.getConversation = functions.https.onRequest((request, response) => {
         response.status(500).send({error: 'Incorrect GET request'});
     }
 });
+
+exports.createCollection = functions.firestore
+    .document('conversations/{$collectionId}').onCreate((event) => {
+        // on creating collection we need to create a entry in userCollections for creator
+        console.log('event', event)
+
+    });
+
 
 //
 // exports.getConversations = functions.https.onRequest((request, response) => {
