@@ -4,7 +4,7 @@
             <div class="card" v-for="message in messages">
                 <div class="card-header">
                     {{message.id}} : {{message.body}} // {{message.createdDate}}
-                    <button @click="removeConversation(message.id)">Remove</button>
+                    <button @click="removeMessage(message.id)">Remove</button>
                 </div>
             </div>
 
@@ -64,8 +64,8 @@
                 });
                 this.body = '';
             },
-            removeConversation(messageId) {
-                messagesApi.removeConversation(messageId);
+            removeMessage(messageId) {
+                messagesApi.removeMessage(messageId);
             },
             addUsers() {
 

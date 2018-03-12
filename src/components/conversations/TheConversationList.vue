@@ -44,7 +44,7 @@
                 this.$router.push('/conversation/' + conversationId);
             },
             removeConversation(conversationId) {
-                conversationApi.removeConversation(conversationId);
+                conversationApi.removeConversation(this.$store.getters.user.id, conversationId);
             }
         },
         created() {

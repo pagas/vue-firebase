@@ -5,20 +5,16 @@ const collectionName = 'conversations';
 
 
 export default {
-    listenToConversations(userId, callback) {
-        return firestore.collection(collectionName).where('userIds.' + userId, '==', true).onSnapshot(snapshot => {
-            let result = [];
-            snapshot.forEach(doc => {
-                result.push({...doc.data(), id: doc.id});
-            })
-            callback(result);
+    removeConversation(userId, conversationId) {
+        return Vue.http.get('/removeConversation', {
+            params: {
+                conversationId: conversationId,
+                userId: userId
+            }
         })
-    },
-    addConversation(conversation) {
-        return firestore.collection(collectionName).add(conversation);
-    },
-    removeConversation(conversationId) {
-        return firestore.collection(collectionName).doc(conversationId).delete();
+        .then(response => {
+            return response.body;
+        })
     },
     getConversation(conversationId) {
         return Vue.http.get(config.functions + '/getConversation', {params: {conversationId: conversationId}})

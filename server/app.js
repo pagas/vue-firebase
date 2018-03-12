@@ -1,6 +1,7 @@
 'use strict';
 var admin = require("firebase-admin");
 var Promise = require("bluebird");
+const functions = require('firebase-functions');
 var serviceAccount = require("../src/config/paulius-7557c-firebase-adminsdk-ngnqy-20ab98f2c3.json");
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -19,7 +20,6 @@ app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
 app.post("/getConversations", function (req, res) {
-    console.log('hey get me all conversations:', req.body);
     var collectionPromises = [];
     req.body.conversationIds.forEach(id => {
         collectionPromises.push(admin.firestore().collection('conversations').doc(id).get()
@@ -36,9 +36,49 @@ app.post("/getConversations", function (req, res) {
     })
 });
 
+app.get("/removeConversation", function (req, res) {
+    var conversationId = req.query.conversationId;
+    var userId = req.query.userId;
+    var collectionPromises = [];
+    collectionPromises.push(admin.firestore().collection('conversations')
+        .doc(conversationId).update({deleted: true})
+    );
+    collectionPromises.push(admin.firestore().collection('userConversations')
+        .where('userId', '==', userId)
+        .where('conversationId', '==', conversationId)
+        .get().then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                doc.ref.update({deleted: true});
+            });
+        })
+    );
+
+    Promise.all(collectionPromises).then(response => {
+        res.json(response);
+    })
+});
+
 app.get("*", function (req, res) {
     res.sendfile(pathUtils.resolve(appDir, "index.html"));
 });
+
+
+// exports.updateUser = functions.firestore
+//     .document('conversations/{conversationId}')
+//     .onUpdate(event => {
+//         // Get an object representing the document
+//         // e.g. {'name': 'Marie', 'age': 66}
+//         var newValue = event.data.data();
+//
+//         // ...or the previous value before this update
+//         var previousValue = event.data.previous.data();
+//
+//         // access a particular field as you would any JS property
+//         var name = newValue.name;
+//
+//         // perform desired operations ...
+//     });
+
 
 http.createServer(app).listen(PORT, function () {
     console.log("Express server listening on port " + PORT);
