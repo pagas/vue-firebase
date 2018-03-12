@@ -5,6 +5,9 @@ const collectionName = 'conversations';
 
 
 export default {
+    addConversation(conversation) {
+        return firestore.collection(collectionName).add(conversation);
+    },
     removeConversation(userId, conversationId) {
         return Vue.http.get('/removeConversation', {
             params: {

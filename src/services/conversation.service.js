@@ -12,7 +12,8 @@ export default {
     addUserToConversation(userId, conversationId,) {
         return userConversationApi.addUserConversation({
             userId: userId,
-            conversationId: conversationId
+            conversationId: conversationId,
+            deleted: false
         })
     },
     listenToNewConversations(userId, callback) {
