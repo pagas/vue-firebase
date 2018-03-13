@@ -19,6 +19,48 @@ app.use(express.static(appDir));
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
+
+app.get("/getConversation", function (req, res) {
+    var conversationId = req.query.conversationId;
+    admin.firestore().collection('conversations').doc(conversationId).get()
+        .then(doc => {
+            return doc.data();
+        })
+        .then(conversation => {
+            // get all data of users that are in the conversation
+            return admin.firestore().collection('userConversations')
+                .where('conversationId', '==', conversationId)
+                .get().then(function(querySnapshot) {
+                    var userIds = [];
+                    querySnapshot.forEach(function(doc) {
+                        userIds.push(doc.data().userId);
+                    });
+                    return {conversation:conversation, userIds: userIds}
+
+            });
+        })
+        .then(function(response) {
+            let usersPromises = [];
+            response.userIds.forEach(function(userId){
+                usersPromises.push(admin.firestore().collection('users').doc(userId).get()
+                    .then(doc => {
+                        return {name: doc.data().name, id: doc.id};
+                    })
+                );
+            });
+            return Promise.all(usersPromises).then(users => {
+                let formatedUsers = users.map(user => {
+                    return {id: user.id, name: user.name}
+                });
+                response.conversation.users = formatedUsers;
+                return response.conversation;
+            }).then(conversation => {
+                res.json(conversation);
+                return true;
+            });
+        })
+});
+
 app.post("/getConversations", function (req, res) {
     var collectionPromises = [];
     req.body.conversationIds.forEach(id => {
@@ -61,23 +103,6 @@ app.get("/removeConversation", function (req, res) {
 app.get("*", function (req, res) {
     res.sendfile(pathUtils.resolve(appDir, "index.html"));
 });
-
-
-// exports.updateUser = functions.firestore
-//     .document('conversations/{conversationId}')
-//     .onUpdate(event => {
-//         // Get an object representing the document
-//         // e.g. {'name': 'Marie', 'age': 66}
-//         var newValue = event.data.data();
-//
-//         // ...or the previous value before this update
-//         var previousValue = event.data.previous.data();
-//
-//         // access a particular field as you would any JS property
-//         var name = newValue.name;
-//
-//         // perform desired operations ...
-//     });
 
 
 http.createServer(app).listen(PORT, function () {

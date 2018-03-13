@@ -1,6 +1,7 @@
 <template>
     <div class="row">
         <div class="col-sm-7">
+            <h2>Chat room: {{conversation.name}}</h2>
             <div class="card" v-for="message in messages">
                 <div class="card-header">
                     {{message.id}} : {{message.body}} // {{message.createdDate}}
@@ -18,8 +19,9 @@
                 <button type="submit" class="btn btn-default" @click.prevent="addConversation()">Send</button>
             </form>
         </div>
-        <div class="col-sm-7">
-            <div class="card" v-for="user in conversationUsers">
+        <div class="col-sm-5">
+            <h3>Users:</h3>
+            <div class="card" v-for="user in conversation.users">
                 <div class="card-header">
                     {{user.name}}
                     <button @click="removeUser(user.id)">Remove</button>

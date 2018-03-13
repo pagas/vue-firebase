@@ -20,7 +20,7 @@ export default {
         })
     },
     getConversation(conversationId) {
-        return Vue.http.get(config.functions + '/getConversation', {params: {conversationId: conversationId}})
+        return Vue.http.get('/getConversation', {params: {conversationId: conversationId}})
             .then(response => {
                 return response.body;
             })
