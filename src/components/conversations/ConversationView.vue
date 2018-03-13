@@ -21,7 +21,7 @@
         </div>
         <div class="col-sm-5">
             <h3>Users:</h3>
-            <div class="card" v-for="user in conversation.users">
+            <div class="card" v-for="user in conversationUsers">
                 <div class="card-header">
                     {{user.name}}
                     <button @click="removeUser(user.id)">Remove</button>
@@ -38,6 +38,7 @@
     import messagesApi from '../../api/messages';
     import userApi from '../../api/users';
     import conversationApi from '../../api/conversations';
+    import conversationService from '../../services/conversation.service';
 
     export default {
         props:['conversationId'],
@@ -48,7 +49,8 @@
                 conversation: null,
                 body: '',
                 messages: [],
-                conversationListener: null
+                conversationListener: null,
+                userListener: null
             }
         },
         computed: {
@@ -77,6 +79,10 @@
             this.conversationListener = messagesApi.listenToMessages(this.conversationId, (response) => {
                 this.messages = response;
             })
+            this.userListener = conversationService.listenToNewUses(this.conversationId, (response) => {
+                this.conversationUsers = response;
+            })
+
             userApi.getUsers().then(response => {
                 this.availableUsers = response;
             })
@@ -90,6 +96,9 @@
         destroyed() {
             if (this.conversationListener) {
                 this.conversationListener();
+            }
+            if (this.userListener) {
+                this.userListener();
             }
         },
         components: {

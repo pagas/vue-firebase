@@ -22,5 +22,12 @@ export default {
                 callback(response)
             })
         });
+    },
+    listenToNewUses(conversationId, callback) {
+        return userConversationApi.listenToNewUsers(conversationId, (response) => {
+            conversationApi.getConversationUsers(conversationId).then( response => {
+                callback(response)
+            })
+        });
     }
 }

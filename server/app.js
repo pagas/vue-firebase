@@ -19,6 +19,42 @@ app.use(express.static(appDir));
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
+function getConversationUsers(conversationId) {
+    return admin.firestore().collection('userConversations')
+        .where('conversationId', '==', conversationId).get()
+        .then(function (querySnapshot) {
+            var userIds = [];
+            querySnapshot.forEach(function (doc) {
+                userIds.push(doc.data().userId);
+            });
+            return userIds;
+        })
+        .then(userIds => {
+            return getUsers(userIds);
+        });
+}
+
+function getUsers(userIds) {
+    var usersPromises = [];
+    userIds.forEach(function (userId) {
+        usersPromises.push(admin.firestore().collection('users').doc(userId).get()
+            .then(doc => {
+                return {name: doc.data().name, id: doc.id};
+            })
+        );
+    });
+    return Promise.all(usersPromises).then(users => {
+        return users.map(user => {
+            return {id: user.id, name: user.name}
+        });
+    });
+}
+
+app.get("/getConversationUsers", function (req, res) {
+    getConversationUsers(req.query.conversationId).then(users => {
+        res.json(users);
+    })
+});
 
 app.get("/getConversation", function (req, res) {
     var conversationId = req.query.conversationId;
@@ -30,18 +66,18 @@ app.get("/getConversation", function (req, res) {
             // get all data of users that are in the conversation
             return admin.firestore().collection('userConversations')
                 .where('conversationId', '==', conversationId)
-                .get().then(function(querySnapshot) {
+                .get().then(function (querySnapshot) {
                     var userIds = [];
-                    querySnapshot.forEach(function(doc) {
+                    querySnapshot.forEach(function (doc) {
                         userIds.push(doc.data().userId);
                     });
-                    return {conversation:conversation, userIds: userIds}
+                    return {conversation: conversation, userIds: userIds}
 
-            });
+                });
         })
-        .then(function(response) {
+        .then(function (response) {
             let usersPromises = [];
-            response.userIds.forEach(function(userId){
+            response.userIds.forEach(function (userId) {
                 usersPromises.push(admin.firestore().collection('users').doc(userId).get()
                     .then(doc => {
                         return {name: doc.data().name, id: doc.id};
@@ -88,8 +124,8 @@ app.get("/removeConversation", function (req, res) {
     collectionPromises.push(admin.firestore().collection('userConversations')
         .where('userId', '==', userId)
         .where('conversationId', '==', conversationId)
-        .get().then(function(querySnapshot) {
-            querySnapshot.forEach(function(doc) {
+        .get().then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
                 doc.ref.update({deleted: true});
             });
         })
