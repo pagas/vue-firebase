@@ -6,6 +6,16 @@ export default {
     addUserConversation(userConversation) {
         return firestore.collection(collectionName).add(userConversation);
     },
+    removeUser(conversationId, userId) {
+        return firestore.collection(collectionName)
+            .where('userId', '==', userId)
+            .where('conversationId', '==', conversationId).get()
+            .then(querySnapshot => {
+                querySnapshot.forEach(function (doc) {
+                    doc.ref.update({deleted: true});
+                });
+            })
+    },
     listenToUserConversations(userId, callback) {
         return firestore.collection(collectionName)
             .where('userId', '==', userId)

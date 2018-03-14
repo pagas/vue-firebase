@@ -8,7 +8,7 @@
             </div>
         </div>
         <div v-if="availableUsers">
-            <button class="btn btn-default" @click.prevent="addUsers()">Add User</button>
+            <button class="btn btn-default" @click="addUsers()">Add User</button>
             <select v-model="selectedUserId">
                 <option :value="null">Please select</option>
                 <option v-for="user in availableUsers" :value="user.id">
@@ -23,6 +23,7 @@
 <script>
     import userApi from '../../api/users';
     import conversationService from '../../services/conversation.service';
+    import userConversationApi from '../../api/userConversations';
 
     export default {
         props:[
@@ -46,7 +47,10 @@
         },
         methods: {
             addUsers() {
-                conversationService.addConversation(this.selectedUserId, this.conversation.id);
+                conversationService.addUserToConversation(this.selectedUserId, this.conversation.id);
+            },
+            removeUser(userId) {
+                userConversationApi.removeUser(this.conversation.id, userId);
             }
         },
         created() {
