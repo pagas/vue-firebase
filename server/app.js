@@ -21,7 +21,9 @@ app.use(express.urlencoded()); // to support URL-encoded bodies
 
 function getConversationUsers(conversationId) {
     return admin.firestore().collection('userConversations')
-        .where('conversationId', '==', conversationId).get()
+        .where('conversationId', '==', conversationId)
+        .where('deleted', '==', false)
+        .get()
         .then(function (querySnapshot) {
             var userIds = [];
             querySnapshot.forEach(function (doc) {
@@ -50,52 +52,28 @@ function getUsers(userIds) {
     });
 }
 
+// app.get("/addUser", function (req, res) {
+//     var userId = req.query.userId;
+//     var conversationId = req.query.conversationId;
+//
+//     admin.firestore().collection('conversations').doc(conversationId).get()
+//
+//     res.json(users);
+// });
+
 app.get("/getConversationUsers", function (req, res) {
     getConversationUsers(req.query.conversationId).then(users => {
         res.json(users);
     })
 });
 
-app.get("/getConversation", function (req, res) {
-    var conversationId = req.query.conversationId;
-    admin.firestore().collection('conversations').doc(conversationId).get()
-        .then(doc => {
-            return doc.data();
-        })
-        .then(conversation => {
-            // get all data of users that are in the conversation
-            return admin.firestore().collection('userConversations')
-                .where('conversationId', '==', conversationId)
-                .get().then(function (querySnapshot) {
-                    var userIds = [];
-                    querySnapshot.forEach(function (doc) {
-                        userIds.push(doc.data().userId);
-                    });
-                    return {conversation: conversation, userIds: userIds}
-
-                });
-        })
-        .then(function (response) {
-            let usersPromises = [];
-            response.userIds.forEach(function (userId) {
-                usersPromises.push(admin.firestore().collection('users').doc(userId).get()
-                    .then(doc => {
-                        return {name: doc.data().name, id: doc.id};
-                    })
-                );
-            });
-            return Promise.all(usersPromises).then(users => {
-                let formatedUsers = users.map(user => {
-                    return {id: user.id, name: user.name}
-                });
-                response.conversation.users = formatedUsers;
-                return response.conversation;
-            }).then(conversation => {
-                res.json(conversation);
-                return true;
-            });
-        })
-});
+// app.get("/getConversation", function (req, res) {
+//     var conversationId = req.query.conversationId;
+//     admin.firestore().collection('conversations').doc(conversationId).get()
+//         .then(doc => {
+//             return doc.data();
+//         })
+// });
 
 app.post("/getConversations", function (req, res) {
     var collectionPromises = [];
@@ -114,6 +92,9 @@ app.post("/getConversations", function (req, res) {
     })
 });
 
+/**
+ * Flag conversation as deleted as well appropriate userConversation records.
+ */
 app.get("/removeConversation", function (req, res) {
     var conversationId = req.query.conversationId;
     var userId = req.query.userId;
