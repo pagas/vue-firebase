@@ -24,10 +24,9 @@ export default {
      * @param conversationId
      */
     getConversation(conversationId) {
-        return Vue.http.get('/getConversation', {params: {conversationId: conversationId}})
-            .then(response => {
-                return response.body;
-            })
+        return firestore.collection('conversations').doc(conversationId).get().then( doc => {
+            return {...doc.data(), id: doc.id};
+        })
     },
     getConversations(conversationIds) {
         return Vue.http.post('/getConversations', {conversationIds: conversationIds})
