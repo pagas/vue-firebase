@@ -10,11 +10,11 @@ export default {
         return firestore.collection(collectionName)
             .where('userId', '==', userId)
             .where('conversationId', '==', conversationId).get()
-            .then(querySnapshot => {
-                querySnapshot.forEach(function (doc) {
-                    doc.ref.update({deleted: true});
-                });
-            })
+            .then(snapshot => {
+                snapshot.forEach(doc => {
+                    doc.ref.delete()
+                })
+            });
     },
     listenToUserConversations(userId, callback) {
         return firestore.collection(collectionName)
@@ -32,15 +32,9 @@ export default {
     listenToNewUsers(conversationId, callback) {
         return firestore.collection(collectionName)
             .where('conversationId', '==', conversationId)
-            .where('deleted', '==', false)
+            //.where('deleted', '==', false)
             .onSnapshot(snapshot => {
-                let result = [];
-                snapshot.forEach(doc => {
-                    result.push(doc.data().userId);
-                })
-                callback(result);
+                callback(snapshot);
             })
     },
-
-
 }
