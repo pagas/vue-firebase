@@ -35,7 +35,6 @@ export default {
             .where('conversationId', '==', conversationId)
             .where('deleted', '==', false)
             .onSnapshot(
-                {includeDocumentMetadataChanges: true},
                 function(doc) {
                     callback(doc);
                 }

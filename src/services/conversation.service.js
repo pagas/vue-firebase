@@ -27,16 +27,11 @@ export default {
     listenToNewUses(conversationId, callback) {
         return userConversationApi.listenToNewUsers(conversationId,
             (snapshot) => {
-                let serverDone = false;
                 let users = [];
                 snapshot.forEach(doc => {
                     users.push({name: doc.data().userName, id: doc.data().userId});
-                    serverDone = !doc.metadata.hasPendingWrites;
                 })
-
-                if (serverDone) {
-                    callback(users)
-                }
+                callback(users);
             });
     }
 }
