@@ -22,7 +22,9 @@
             </div>
         </div>
         <div class="col-sm-5">
-            <conversation-user-list :conversation-users="conversationUsers" :conversation="conversation">
+            <conversation-user-list :conversation-users="conversationUsers"
+                                    :conversation="conversation"
+                                    :all-available-users="availableUsers">
             </conversation-user-list>
         </div>
     </div>
@@ -90,9 +92,7 @@
 
             conversationApi.getConversation(this.conversationId).then(response => {
                 return this.conversation = response;
-            }).then( response => {
-
-            })
+            });
         },
         destroyed() {
             if (this.conversationListener) {
