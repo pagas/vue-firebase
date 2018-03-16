@@ -16,11 +16,12 @@ export default {
             userName: user.name,
             conversationId: conversation.id,
             conversationName: conversation.name,
-            deleted: false
+            deleted: false,
+            createdAt: new Date()
         })
     },
-    listenToNewConversations(userId, callback) {
-        return userConversationApi.listenToUserConversations(userId, (conversations) => {
+    listenToNewConversations(userId, lastVisible, callback) {
+        return userConversationApi.listenToUserConversations(userId, lastVisible, (conversations) => {
             callback(conversations)
         });
     },

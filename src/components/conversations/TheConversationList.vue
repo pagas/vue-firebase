@@ -8,6 +8,7 @@
                 <button @click="openConversation(conversation.id)">Open</button>
             </div>
         </div>
+        <button @click="loadMore()" v-if="!hideLoadMore">Load more</button>
 
         <form class="form-inline">
             <div class="form-group">
@@ -22,16 +23,29 @@
 
 <script>
     import conversationApi from '../../api/conversations';
+    import userConversationApi from '../../api/userConversations';
     import conversationService from '../../services/conversation.service';
     export default {
         data () {
             return {
                 name: '',
                 conversations: [],
-                conversationListener: null
+                conversationListener: null,
+                hideLoadMore: false,
+                lastVisible: null
             }
         },
         computed: {
+        },
+        watch: {
+            lastVisible(newVisible) {
+                if (this.conversationListener) {
+                    this.conversationListener();
+                }
+                this.conversationListener = conversationService.listenToNewConversations(this.$store.getters.user.id, newVisible, (response) => {
+                    this.conversations = response;
+                })
+            }
         },
         methods: {
             addConversation() {
@@ -44,11 +58,21 @@
             },
             removeConversation(conversationId) {
                 conversationApi.removeConversation(this.$store.getters.user.id, conversationId);
+            },
+            loadMore() {
+                userConversationApi.loadMoreConversations(this.$store.getters.user.id, this.lastVisible).then(response => {
+                    this.conversations = this.conversations.concat(response.result);
+                    this.lastVisible = response.lastVisible;
+                    if (response.result.length < 3) {
+                        this.hideLoadMore = true;
+                    }
+                })
             }
         },
         created() {
-            this.conversationListener = conversationService.listenToNewConversations(this.$store.getters.user.id, (response) => {
-                this.conversations = response;
+            userConversationApi.getFirstConversations(this.$store.getters.user.id).then(response => {
+                this.conversations = response.result;
+                this.lastVisible = response.lastVisible;
             })
         },
         destroyed() {

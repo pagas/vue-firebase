@@ -7,6 +7,7 @@ const collectionName = 'conversations';
 export default {
     addConversation(conversation) {
         conversation.deleted = false;
+        conversation.createdAt = new Date();
         return firestore.collection(collectionName).add(conversation);
     },
     removeConversation(userId, conversationId) {

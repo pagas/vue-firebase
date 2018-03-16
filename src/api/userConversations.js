@@ -17,10 +17,12 @@ export default {
                 })
             });
     },
-    listenToUserConversations(userId, callback) {
+    listenToUserConversations(userId, lastVisible, callback) {
         return firestore.collection(collectionName)
             .where('userId', '==', userId)
             .where('deleted', '==', false)
+            .orderBy('createdAt', 'desc')
+            .endAt(lastVisible)
             .onSnapshot(snapshot => {
                 let result = [];
                 snapshot.forEach(doc => {
@@ -40,4 +42,35 @@ export default {
                 }
             )
     },
+
+    loadMoreConversations(userId, lastVisible) {
+        return firestore.collection(collectionName)
+            .where('userId', '==', userId)
+            .where('deleted', '==', false)
+            .orderBy('createdAt', 'desc')
+            .startAfter(lastVisible)
+            .limit(3).get()
+            .then(documentSnapshots => {
+                let result = [];
+                documentSnapshots.forEach(doc => {
+                    result.push({id: doc.data().conversationId, name: doc.data().conversationName});
+                })
+                return {result: result, lastVisible: documentSnapshots.docs[documentSnapshots.docs.length-1]};
+            })
+    },
+    getFirstConversations(userId) {
+        return firestore.collection(collectionName)
+            .where('userId', '==', userId)
+            .where('deleted', '==', false)
+            .orderBy('createdAt', 'desc')
+            .limit(3).get()
+            .then(documentSnapshots => {
+                let result = [];
+                documentSnapshots.forEach(doc => {
+                    result.push({id: doc.data().conversationId, name: doc.data().conversationName});
+                })
+                return {result: result, lastVisible: documentSnapshots.docs[documentSnapshots.docs.length-1]};
+            })
+    }
+
 }
