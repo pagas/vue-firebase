@@ -35,9 +35,8 @@
         },
         methods: {
             addConversation() {
-                const conversation = {name: this.name, deleted: false};
-                const userId = this.$store.getters.user.id;
-                conversationService.addConversation(userId, conversation);
+                const conversation = {name: this.name};
+                conversationService.addConversation(conversation, this.$store.getters.user);
                 this.name = '';
             },
             openConversation(conversationId) {

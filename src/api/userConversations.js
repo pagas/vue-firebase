@@ -1,5 +1,4 @@
 import firestore from '../firestoreInit';
-
 const collectionName = 'userConversations';
 
 export default {
@@ -12,7 +11,9 @@ export default {
             .where('conversationId', '==', conversationId).get()
             .then(snapshot => {
                 snapshot.forEach(doc => {
-                    doc.ref.delete()
+                    doc.ref.delete().then(response => {
+                        console.log('document was deleted', response);
+                    })
                 })
             });
     },
@@ -23,7 +24,7 @@ export default {
             .onSnapshot(snapshot => {
                 let result = [];
                 snapshot.forEach(doc => {
-                    result.push(doc.data().conversationId);
+                    result.push({id: doc.data().conversationId, name: doc.data().conversationName});
                 })
                 callback(result);
             })
@@ -32,9 +33,12 @@ export default {
     listenToNewUsers(conversationId, callback) {
         return firestore.collection(collectionName)
             .where('conversationId', '==', conversationId)
-            //.where('deleted', '==', false)
-            .onSnapshot(snapshot => {
-                callback(snapshot);
-            })
+            .where('deleted', '==', false)
+            .onSnapshot(
+                {includeDocumentMetadataChanges: true},
+                function(doc) {
+                    callback(doc);
+                }
+            )
     },
 }

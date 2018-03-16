@@ -9,9 +9,9 @@
         </div>
         <div v-if="availableUsers">
             <button class="btn btn-default" @click="addUsers()">Add User</button>
-            <select v-model="selectedUserId">
+            <select v-model="selectedUser">
                 <option :value="null">Please select</option>
-                <option v-for="user in availableUsers" :value="user.id">
+                <option v-for="user in availableUsers" :value="user">
                     {{ user.name }}
                 </option>
             </select>
@@ -32,7 +32,7 @@
         ],
         data () {
             return {
-                selectedUserId: null,
+                selectedUser: null,
                 allAvailableUsers: []
             }
         },
@@ -47,7 +47,7 @@
         },
         methods: {
             addUsers() {
-                conversationService.addUserToConversation(this.selectedUserId, this.conversation.id);
+                conversationService.addUserToConversation(this.conversation, this.selectedUser);
             },
             removeUser(userId) {
                 userConversationApi.removeUser(this.conversation.id, userId);

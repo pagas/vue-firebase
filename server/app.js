@@ -61,6 +61,12 @@ function getUsers(userIds) {
 //     res.json(users);
 // });
 
+app.get("/getUserByIds", function (req, res) {
+    getUsers(req.query.userIds).then(users => {
+        res.json(users);
+    })
+});
+
 app.get("/getConversationUsers", function (req, res) {
     getConversationUsers(req.query.conversationId).then(users => {
         res.json(users);

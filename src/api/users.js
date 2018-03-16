@@ -1,5 +1,6 @@
 import firestore from '../firestoreInit';
 const collectionName = 'users';
+import Vue from 'vue';
 
 export default {
     getUser(userId) {
