@@ -17,7 +17,7 @@
                     <div class="form-group">
                         <input v-model="body" type="text" class="form-control" id="exampleInputEmail2" placeholder="message">
                     </div>
-                    <button type="submit" class="btn btn-default" @click.prevent="addConversation()">Send</button>
+                    <button type="submit" class="btn btn-default" @click.prevent="addMessage()">Send</button>
                 </form>
             </div>
         </div>
@@ -60,7 +60,7 @@
                 });
                 return users.length > 0 && users[0].name;
             },
-            addConversation() {
+            addMessage() {
                 messagesApi.addMessage({
                     conversationId: this.conversationId,
                     userId: this.$store.getters.user.id,
