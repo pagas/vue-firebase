@@ -5,11 +5,10 @@
         <button @click="loadMore()" v-if="!hideLoadMore">Load more</button>
         <div class="card" v-for="message in reverseMessages">
             <div class="card-header">
-                {{getUserName(message.userId)}} : {{message.body}} // {{message.createdAt}}
+                {{getUserName(message.userId)}}: {{message.body}} {{message.createdAt | moment("calendar")}}
                 <button @click="removeMessage(message.id)">Remove</button>
             </div>
         </div>
-
         <form class="form-inline">
             <div class="form-group">
                 <label>{{currentUserName}}</label>

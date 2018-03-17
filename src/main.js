@@ -11,6 +11,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import './css/main.css';
 
 Vue.use(resource);
+Vue.use(require('vue-moment'));
 
 new Vue({
     el: '#app',

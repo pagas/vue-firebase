@@ -4,6 +4,7 @@ const collectionName = 'messages';
 
 export default {
     listenToMessages(conversationId, lastVisible, callback) {
+        lastVisible = lastVisible || null;
         return firestore.collection(collectionName)
             .where('conversationId', '==', conversationId)
             .where('deleted', '==', false)
@@ -18,7 +19,7 @@ export default {
             })
     },
     addMessage(message) {
-        message.createdAt = Date.now();
+        message.createdAt = new Date();
         message.deleted = false;
         return firestore.collection(collectionName).add(message);
     },
