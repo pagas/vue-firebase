@@ -1,12 +1,14 @@
 <template>
 
-    <div >
+    <div>
         <h2>Chat room: {{conversation.name}}</h2>
-        <button @click="loadMore()" v-if="!hideLoadMore">Load more</button>
-        <div class="card" v-for="message in reverseMessages">
-            <div class="card-header">
-                {{getUserName(message.userId)}}: {{message.body}} {{message.createdAt | moment("calendar")}}
-                <button @click="removeMessage(message.id)">Remove</button>
+        <div class="chat-container">
+            <button @click="loadMore()" v-if="!hideLoadMore">Load more</button>
+            <div class="card" v-for="message in reverseMessages">
+                <div class="card-header">
+                    {{getUserName(message.userId)}}: {{message.body}} {{message.createdAt | moment("calendar")}}
+                    <button @click="removeMessage(message.id)">Remove</button>
+                </div>
             </div>
         </div>
         <form class="form-inline">
@@ -30,11 +32,11 @@
     import ConversationUserList from './ConversationUserList.vue';
 
     export default {
-        props:[
+        props: [
             'conversation',
             'conversationUsers'
         ],
-        data () {
+        data() {
             return {
                 body: '',
                 messages: [],
@@ -62,7 +64,7 @@
             }
         },
         methods: {
-            getUserName(userId){
+            getUserName(userId) {
                 let users = this.conversationUsers.filter(user => {
                     return user.id == userId;
                 });
@@ -103,5 +105,10 @@
     }
 </script>
 
-<style>
+<style scoped>
+    .chat-container {
+        height: 400px;
+        overflow: auto;
+    }
+
 </style>

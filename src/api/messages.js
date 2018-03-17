@@ -24,7 +24,7 @@ export default {
         return firestore.collection(collectionName).add(message);
     },
     removeMessage(messageId) {
-        return firestore.collection(collectionName).doc(messageId).delete();
+        return firestore.collection(collectionName).doc(messageId).update({deleted: true});
     },
     getFirstMessages(conversationId) {
         return firestore.collection(collectionName)
