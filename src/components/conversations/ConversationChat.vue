@@ -2,9 +2,10 @@
 
     <div >
         <h2>Chat room: {{conversation.name}}</h2>
-        <div class="card" v-for="message in messages">
+        <button @click="loadMore()" v-if="!hideLoadMore">Load more</button>
+        <div class="card" v-for="message in reverseMessages">
             <div class="card-header">
-                {{getUserName(message.userId)}} : {{message.body}} // {{message.createdDate}}
+                {{getUserName(message.userId)}} : {{message.body}} // {{message.createdAt}}
                 <button @click="removeMessage(message.id)">Remove</button>
             </div>
         </div>
@@ -38,12 +39,27 @@
             return {
                 body: '',
                 messages: [],
-                conversationListener: null
+                messagesListener: null,
+                hideLoadMore: false,
+                lastVisible: null
             }
         },
         computed: {
             currentUserName() {
                 return this.getUserName(this.$store.getters.user.id);
+            },
+            reverseMessages: state => {
+                return state.messages.slice().reverse();
+            }
+        },
+        watch: {
+            lastVisible(newVisible) {
+                if (this.messagesListener) {
+                    this.messagesListener();
+                }
+                this.messagesListener = messagesApi.listenToMessages(this.conversation.id, newVisible, (response) => {
+                    this.messages = response;
+                })
             }
         },
         methods: {
@@ -57,26 +73,32 @@
                 messagesApi.addMessage({
                     conversationId: this.conversation.id,
                     userId: this.$store.getters.user.id,
-                    body: this.body,
-                    createdDate: Date.now()
+                    body: this.body
                 });
                 this.body = '';
             },
             removeMessage(messageId) {
                 messagesApi.removeMessage(messageId);
             },
-            addUsers() {
-
+            loadMore() {
+                messagesApi.loadMoreMessages(this.conversation.id, this.lastVisible).then(response => {
+                    this.messages = this.messages.concat(response.result);
+                    this.lastVisible = response.lastVisible;
+                    if (response.result.length < 3) {
+                        this.hideLoadMore = true;
+                    }
+                })
             }
         },
         created() {
-            this.conversationListener = messagesApi.listenToMessages(this.conversation.id, (response) => {
-                this.messages = response;
+            messagesApi.getFirstMessages(this.conversation.id).then(response => {
+                this.messages = response.result;
+                this.lastVisible = response.lastVisible;
             })
         },
         destroyed() {
-            if (this.conversationListener) {
-                this.conversationListener();
+            if (this.messagesListener) {
+                this.messagesListener();
             }
         }
     }
