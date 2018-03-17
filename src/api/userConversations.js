@@ -18,6 +18,7 @@ export default {
             });
     },
     listenToUserConversations(userId, lastVisible, callback) {
+        lastVisible = lastVisible || null;
         return firestore.collection(collectionName)
             .where('userId', '==', userId)
             .where('deleted', '==', false)
