@@ -28,8 +28,7 @@
     export default {
         props:[
             'conversationUsers',
-            'conversation',
-            'allAvailableUsers'
+            'conversation'
         ],
         data () {
             return {
@@ -55,6 +54,9 @@
             }
         },
         created() {
+            userApi.getUsers().then(response => {
+                this.allAvailableUsers = response;
+            })
         },
         destroyed() {
         }

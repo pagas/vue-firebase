@@ -1,16 +1,25 @@
 <template>
-    <div class="row">
-        <div class="col-sm-7">
-            <conversation-chat v-if="conversation" :conversation="conversation"
-                               :conversation-users="conversationUsers">
-            </conversation-chat>
+
+    <div >
+        <h2>Chat room: {{conversation.name}}</h2>
+        <div class="card" v-for="message in messages">
+            <div class="card-header">
+                {{getUserName(message.userId)}} : {{message.body}} // {{message.createdDate}}
+                <button @click="removeMessage(message.id)">Remove</button>
+            </div>
         </div>
-        <div class="col-sm-5">
-            <conversation-user-list :conversation-users="conversationUsers"
-                                    :conversation="conversation">
-            </conversation-user-list>
-        </div>
+
+        <form class="form-inline">
+            <div class="form-group">
+                <label>{{currentUserName}}</label>
+            </div>
+            <div class="form-group">
+                <input v-model="body" type="text" class="form-control" id="exampleInputEmail2" placeholder="message">
+            </div>
+            <button type="submit" class="btn btn-default" @click.prevent="addMessage()">Send</button>
+        </form>
     </div>
+
 </template>
 
 <script>
@@ -19,16 +28,17 @@
     import conversationApi from '../../api/conversations';
     import conversationService from '../../services/conversation.service';
     import ConversationUserList from './ConversationUserList.vue';
-    import ConversationChat from './ConversationChat.vue';
 
     export default {
-        props:['conversationId'],
+        props:[
+            'conversation',
+            'conversationUsers'
+        ],
         data () {
             return {
-                availableUsers: [],
-                conversationUsers: [],
-                conversation: null,
-                userListener: null
+                body: '',
+                messages: [],
+                conversationListener: null
             }
         },
         computed: {
@@ -45,7 +55,7 @@
             },
             addMessage() {
                 messagesApi.addMessage({
-                    conversationId: this.conversationId,
+                    conversationId: this.conversation.id,
                     userId: this.$store.getters.user.id,
                     body: this.body,
                     createdDate: Date.now()
@@ -60,22 +70,14 @@
             }
         },
         created() {
-            this.userListener = conversationService.listenToNewUses(this.conversationId, (response) => {
-                this.conversationUsers = response;
+            this.conversationListener = messagesApi.listenToMessages(this.conversation.id, (response) => {
+                this.messages = response;
             })
-
-            conversationApi.getConversation(this.conversationId).then(response => {
-                return this.conversation = response;
-            });
         },
         destroyed() {
-            if (this.userListener) {
-                this.userListener();
+            if (this.conversationListener) {
+                this.conversationListener();
             }
-        },
-        components: {
-            ConversationUserList: ConversationUserList,
-            ConversationChat: ConversationChat
         }
     }
 </script>
