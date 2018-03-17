@@ -1,5 +1,13 @@
 <template>
     <div>
+        <form class="form-inline">
+            <div class="form-group">
+                <label>Conversation Name</label>
+                <input v-model="name" type="text" class="form-control" placeholder="Conversation name">
+            </div>
+            <button type="submit" class="btn btn-default" @click.prevent="addConversation()">Add</button>
+        </form>
+
         <div class="card" v-for="conversation in conversations">
             <div class="card-header">
                 <!--<router-link :to="'/property/' + property.id">{{property.title}}</router-link>-->
@@ -9,15 +17,6 @@
             </div>
         </div>
         <button @click="loadMore()" v-if="!hideLoadMore">Load more</button>
-
-        <form class="form-inline">
-            <div class="form-group">
-                <label>Conversation Name</label>
-                <input v-model="name" type="text" class="form-control" placeholder="Conversation name">
-            </div>
-            <button type="submit" class="btn btn-default" @click.prevent="addConversation()">Add</button>
-        </form>
-
     </div>
 </template>
 
