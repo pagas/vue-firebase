@@ -1,12 +1,7 @@
 'use strict';
-var admin = require("firebase-admin");
 var Promise = require("bluebird");
-const functions = require('firebase-functions');
-var serviceAccount = require("../src/config/paulius-7557c-firebase-adminsdk-ngnqy-20ab98f2c3.json");
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://paulius-7557c.firebaseio.com"
-});
+var admin = require("./helpers/firebaseAdmin");
+var conversationService = require("./services/conversation.service");
 
 var http = require("http"),
     pathUtils = require("path"),
@@ -80,6 +75,15 @@ app.get("/getConversationUsers", function (req, res) {
 //             return doc.data();
 //         })
 // });
+
+app.post("/createConversation", function (req, res) {
+    var conversation = req.body.conversation;
+    var user = req.body.user;
+    conversationService.createConversation(conversation, user)
+        .then(response => {
+            res.json(response);
+        });
+});
 
 app.post("/getConversations", function (req, res) {
     var collectionPromises = [];

@@ -10,6 +10,15 @@ export default {
         conversation.createdAt = new Date();
         return firestore.collection(collectionName).add(conversation);
     },
+    createConversation(conversation, user) {
+        return Vue.http.post('/createConversation', {
+                conversation: conversation,
+                user: user
+            })
+            .then(response => {
+                return response.body;
+            })
+    },
     removeConversation(userId, conversationId) {
         return Vue.http.get('/removeConversation', {
             params: {

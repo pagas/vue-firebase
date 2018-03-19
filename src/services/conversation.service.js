@@ -4,11 +4,7 @@ import userApi from '../api/users';
 
 export default {
     addConversation(conversation, user) {
-        // create conversation
-        return conversationApi.addConversation(conversation)
-            .then(response => {
-                return this.addUserToConversation({...conversation, id: response.id}, user);
-            })
+        return conversationApi.createConversation(conversation, user);
     },
     addUserToConversation(conversation, user) {
         return userConversationApi.addUserConversation({

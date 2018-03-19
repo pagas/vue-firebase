@@ -4,7 +4,7 @@
         <div class="card" v-for="user in conversationUsers">
             <div class="card-header">
                 {{user.name}}
-                <button @click="removeUser(user.id)">Remove</button>
+                <button v-if="!isCurrentUser(user)"@click="removeUser(user.id)">Remove</button>
             </div>
         </div>
         <div v-if="availableUsers">
@@ -43,7 +43,7 @@
                         return availableUser.id == user.id;
                     });
                 });
-            }
+            },
         },
         methods: {
             addUsers() {
@@ -51,6 +51,9 @@
             },
             removeUser(userId) {
                 userConversationApi.removeUser(this.conversation.id, userId);
+            },
+            isCurrentUser(user) {
+                return this.$store.getters.user.id == user.id;
             }
         },
         created() {
