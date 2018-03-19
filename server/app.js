@@ -24,23 +24,6 @@ app.post("/createConversation", function (req, res) {
         });
 });
 
-app.post("/getConversations", function (req, res) {
-    var collectionPromises = [];
-    req.body.conversationIds.forEach(id => {
-        collectionPromises.push(admin.firestore().collection('conversations').doc(id).get()
-            .then(doc => {
-                var obj = doc.data();
-                obj.id = doc.id;
-                return obj;
-            })
-        );
-    });
-
-    Promise.all(collectionPromises).then(response => {
-        res.json(response);
-    })
-});
-
 /**
  * Flag conversation as deleted as well appropriate userConversation records.
  */
