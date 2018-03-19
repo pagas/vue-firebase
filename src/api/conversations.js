@@ -39,22 +39,4 @@ export default {
             return {...doc.data(), id: doc.id};
         })
     },
-    getConversations(conversationIds) {
-        return Vue.http.post('/getConversations', {conversationIds: conversationIds})
-            .then(response => {
-                return response.body;
-            })
-    },
-    getConversationUsers(conversationId, userIds) {
-        return Vue.http.get('/getConversationUsers', {params:{conversationId: conversationId, userIds: userIds}})
-            .then(response => {
-                return response.body;
-            })
-    },
-    addUser(conversationId, userId) {
-        return Vue.http.get('/addUser', {params:{conversationId: conversationId, userId: userId}})
-            .then(response => {
-                return response.body;
-            })
-    }
 }

@@ -14,22 +14,6 @@ app.use(express.static(appDir));
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
-function getConversationUsers(conversationId) {
-    return admin.firestore().collection('userConversations')
-        .where('conversationId', '==', conversationId)
-        .where('deleted', '==', false)
-        .get()
-        .then(function (querySnapshot) {
-            var userIds = [];
-            querySnapshot.forEach(function (doc) {
-                userIds.push(doc.data().userId);
-            });
-            return userIds;
-        })
-        .then(userIds => {
-            return getUsers(userIds);
-        });
-}
 
 function getUsers(userIds) {
     var usersPromises = [];
@@ -47,34 +31,12 @@ function getUsers(userIds) {
     });
 }
 
-// app.get("/addUser", function (req, res) {
-//     var userId = req.query.userId;
-//     var conversationId = req.query.conversationId;
-//
-//     admin.firestore().collection('conversations').doc(conversationId).get()
-//
-//     res.json(users);
-// });
-
 app.get("/getUserByIds", function (req, res) {
     getUsers(req.query.userIds).then(users => {
         res.json(users);
     })
 });
 
-app.get("/getConversationUsers", function (req, res) {
-    getConversationUsers(req.query.conversationId).then(users => {
-        res.json(users);
-    })
-});
-
-// app.get("/getConversation", function (req, res) {
-//     var conversationId = req.query.conversationId;
-//     admin.firestore().collection('conversations').doc(conversationId).get()
-//         .then(doc => {
-//             return doc.data();
-//         })
-// });
 
 app.post("/createConversation", function (req, res) {
     var conversation = req.body.conversation;
