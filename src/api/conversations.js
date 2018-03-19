@@ -1,15 +1,9 @@
 import firestore from '../firestoreInit';
 import Vue from 'vue';
-import config from '../config/firebaseConfig'
 const collectionName = 'conversations';
 
 
 export default {
-    addConversation(conversation) {
-        conversation.deleted = false;
-        conversation.createdAt = new Date();
-        return firestore.collection(collectionName).add(conversation);
-    },
     createConversation(conversation, user) {
         return Vue.http.post('/createConversation', {
                 conversation: conversation,
@@ -35,7 +29,7 @@ export default {
      * @param conversationId
      */
     getConversation(conversationId) {
-        return firestore.collection('conversations').doc(conversationId).get().then( doc => {
+        return firestore.collection(collectionName).doc(conversationId).get().then( doc => {
             return {...doc.data(), id: doc.id};
         })
     },
