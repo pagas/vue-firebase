@@ -15,29 +15,6 @@ app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
 
 
-function getUsers(userIds) {
-    var usersPromises = [];
-    userIds.forEach(function (userId) {
-        usersPromises.push(admin.firestore().collection('users').doc(userId).get()
-            .then(doc => {
-                return {name: doc.data().name, id: doc.id};
-            })
-        );
-    });
-    return Promise.all(usersPromises).then(users => {
-        return users.map(user => {
-            return {id: user.id, name: user.name}
-        });
-    });
-}
-
-app.get("/getUserByIds", function (req, res) {
-    getUsers(req.query.userIds).then(users => {
-        res.json(users);
-    })
-});
-
-
 app.post("/createConversation", function (req, res) {
     var conversation = req.body.conversation;
     var user = req.body.user;
