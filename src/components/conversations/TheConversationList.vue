@@ -50,8 +50,8 @@
         },
         methods: {
             addConversation() {
-                const conversation = {name: this.name};
-                conversationService.addConversation(conversation, this.$store.getters.user);
+                const conversation = {name: this.name, userId: this.$store.getters.user.id};
+                conversationService.addConversation(conversation);
                 this.name = '';
             },
             openConversation(conversationId) {

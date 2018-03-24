@@ -4,14 +4,10 @@ const collectionName = 'conversations';
 
 
 export default {
-    createConversation(conversation, user) {
-        return Vue.http.post('/createConversation', {
-                conversation: conversation,
-                user: user
-            })
-            .then(response => {
-                return response.body;
-            })
+    createConversation(conversation) {
+        return getFirestore().then(firestore => {
+            return firestore.collection(collectionName).add(conversation);
+        });
     },
     removeConversation(userId, conversationId) {
         return Vue.http.get('/removeConversation', {

@@ -4,14 +4,14 @@ var Promise = require("bluebird");
 var admin = require("../helpers/firebaseAdmin");
 var conversationService = require("../services/conversation.service");
 
-router.post("/createConversation", function (req, res) {
-    var conversation = req.body.conversation;
-    var user = req.body.user;
-    conversationService.createConversation(conversation, user)
-        .then(response => {
-            res.json(response);
-        });
-});
+// router.post("/createConversation", function (req, res) {
+//     var conversation = req.body.conversation;
+//     var user = req.body.user;
+//     conversationService.createConversation(conversation, user)
+//         .then(response => {
+//             res.json(response);
+//         });
+// });
 
 /**
  * Flag conversation as deleted as well appropriate userConversation records.

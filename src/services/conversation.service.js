@@ -3,8 +3,8 @@ import userConversationApi from '../api/userConversations';
 import userApi from '../api/users';
 
 export default {
-    addConversation(conversation, user) {
-        return conversationApi.createConversation(conversation, user);
+    addConversation(conversation) {
+        return conversationApi.createConversation(conversation);
     },
     addUserToConversation(conversation, user) {
         return userConversationApi.addUserConversation({
