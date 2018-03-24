@@ -1,5 +1,4 @@
 import getFirestore from '../firestoreInit';
-import Vue from 'vue';
 const collectionName = 'conversations';
 
 
@@ -9,16 +8,12 @@ export default {
             return firestore.collection(collectionName).add(conversation);
         });
     },
-    removeConversation(userId, conversationId) {
-        return Vue.http.get('/removeConversation', {
-            params: {
-                conversationId: conversationId,
-                userId: userId
+    removeConversation(conversationId) {
+        getFirestore().then(firebase => {
+            return firebase.collection(collectionName)
+                    .doc(conversationId).update({deleted: true})
             }
-        })
-        .then(response => {
-            return response.body;
-        })
+        );
     },
     /**
      * Used in conversation view to get conversation and users in one object.

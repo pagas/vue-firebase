@@ -1,19 +1,6 @@
 var admin = require("../helpers/firebaseAdmin");
-
-/**
- * Creates conversation and user record in userConversation collection.
- * @param conversation - conversation to be created
- * @param user - conversation author
- * @returns {Promise<firebase.firestore.DocumentReference>}
- */
-exports.createConversation = function(conversation, user){
-    conversation.deleted = true;
-    conversation.createdAt = new Date();
-    return admin.firestore().collection('conversations').add(conversation).then(response => {
-        conversation.id = response.id;
-        return this.addUserToConversation(conversation, user);
-    });
-};
+var userConversationCollection = 'userConversations';
+var Promise = require("bluebird");
 
 /**
  * Registers user into collection.
@@ -22,8 +9,7 @@ exports.createConversation = function(conversation, user){
  * @returns {Promise<firebase.firestore.DocumentReference>}
  */
 exports.addUserToConversation = function(conversation, user) {
-    console.log(conversation, user);
-    return admin.firestore().collection('userConversations').add({
+    return admin.firestore().collection(userConversationCollection).add({
         userId: user.id,
         userName: user.name,
         conversationId: conversation.id,
@@ -32,3 +18,16 @@ exports.addUserToConversation = function(conversation, user) {
         createdAt: new Date()
     })
 }
+
+exports.updateConversationDeleteFlag = function(conversationId, deleteFlag) {
+    return admin.firestore().collection(userConversationCollection)
+        .where('conversationId', '==', conversationId)
+        .get().then(function (querySnapshot) {
+            let promises = [];
+            querySnapshot.forEach(function (doc) {
+                promises.push(doc.ref.update({deleted: deleteFlag}));
+            });
+            return Promise.all(promises);
+        })
+}
+
