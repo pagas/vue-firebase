@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as firebase from 'firebase'
-import firestore from '../firestoreInit';
+import getFirestore from '../firestoreInit';
 import properties from './modules/properties';
 import words from './modules/words';
 
@@ -48,13 +48,15 @@ export default new Vuex.Store({
             state.initialized = true;
             firebase.auth().onAuthStateChanged(function (user) {
                 if (user) {
-                    firestore.collection('users').doc(user.uid).get().then(doc => {
-                        commit('setUser', {
-                            id: user.uid,
-                            email: user.email,
-                            name: doc.data().name
-                        });
-                    })
+                    getFirestore().then(firestore => {
+                        firestore.collection('users').doc(user.uid).get().then(doc => {
+                            commit('setUser', {
+                                id: user.uid,
+                                email: user.email,
+                                name: doc.data().name
+                            });
+                        })
+                    });
                 } else {
                     commit('setUser', null);
                 }
@@ -63,13 +65,17 @@ export default new Vuex.Store({
         singUserUp({commit}, payload) {
             return firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
                 .then(user => {
-                    return firestore.collection('users').doc(user.uid).set({
-                        name: payload.name
-                    }, {merge: true});
+                    return getFirestore().then(firestore => {
+                        firestore.collection('users').doc(user.uid).set({
+                            name: payload.name
+                        }, {merge: true});
+                    });
                 });
         },
         singUserIn({commit}, payload) {
-            firebase.auth().signInWithEmailAndPassword(payload.email, payload.password);
+            firebase.auth().signInWithEmailAndPassword(payload.email, payload.password).then(response => {
+                console.log('singin', response);
+            });
         },
         singOut({commit}) {
             firebase.auth().signOut();

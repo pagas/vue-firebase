@@ -1,4 +1,4 @@
-import firestore from '../firestoreInit';
+import getFirestore from '../firestoreInit';
 import Vue from 'vue';
 const collectionName = 'conversations';
 
@@ -29,8 +29,10 @@ export default {
      * @param conversationId
      */
     getConversation(conversationId) {
-        return firestore.collection(collectionName).doc(conversationId).get().then( doc => {
-            return {...doc.data(), id: doc.id};
-        })
+        return getFirestore().then(firestore => {
+            return firestore.collection(collectionName).doc(conversationId).get().then(doc => {
+                return {...doc.data(), id: doc.id};
+            })
+        });
     },
 }

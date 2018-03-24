@@ -1,5 +1,5 @@
-import firestore from '../../firestoreInit';
-
+import getFirestore from '../../firestoreInit';
+import * as firebase from 'firebase'
 const state = {
     properties: []
 };
@@ -16,28 +16,32 @@ const actions = {
         var propertyId;
         var image = property.image;
         delete property.image;
-        firestore.collection('properties').add(property)
-            .then(data => {
-                propertyId = data.id;
-                const filename = image.name;
-                const ext = filename.slice(filename.lastIndexOf('.'));
-                return firebase.storage().ref('properties/' + propertyId + ext).put(image);
-            })
-            .then(fileData => {
-                const imageUrl = fileData.metadata.downloadURLs[0];
-                return firestore.collection('properties').doc(propertyId).update({
-                    imageUrl: imageUrl
+        getFirestore().then(firestore => {
+            return firestore.collection('properties').add(property)
+                .then(data => {
+                    propertyId = data.id;
+                    const filename = image.name;
+                    const ext = filename.slice(filename.lastIndexOf('.'));
+                    return firebase.storage().ref('properties/' + propertyId + ext).put(image);
+                })
+                .then(fileData => {
+                    const imageUrl = fileData.metadata.downloadURLs[0];
+                    return getFirestore().then(firestore => {
+                        return firestore.collection('properties').doc(propertyId).update({
+                            imageUrl: imageUrl
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.log('error creating', error)
                 });
-            })
-            .catch(error => {
-                console.log('error creating', error)
-            });
+        });
     },
     editProperty({commit}, property) {
         var propertyId = property.id;
         var image = property.image;
         delete property.image;
-        firestore.collection('properties').doc(property.id).update(property)
+        getFirestore.collection('properties').doc(property.id).update(property)
             .then(data => {
                 if (image) {
                     const filename = image.name;
@@ -47,8 +51,10 @@ const actions = {
             })
             .then(fileData => {
                 const imageUrl = fileData.metadata.downloadURLs[0];
-                return firestore.collection('properties').doc(propertyId).update({
-                    imageUrl: imageUrl
+                return getFirestore().then(firestore => {
+                    return firestore.collection('properties').doc(propertyId).update({
+                        imageUrl: imageUrl
+                    });
                 });
             })
             .catch(error => {
@@ -56,21 +62,27 @@ const actions = {
             });
     },
     loadProperties({commit}) {
-        return firestore.collection('properties').get().then(snapshot => {
-            let result = [];
-            snapshot.forEach(doc => {
-                result.push({...doc.data(), id: doc.id});
-            })
-            return result;
-        });
+        return getFirestore().then(firestore => {
+            return firestore.collection('properties').get().then(snapshot => {
+                let result = [];
+                snapshot.forEach(doc => {
+                    result.push({...doc.data(), id: doc.id});
+                })
+                return result;
+            });
+        })
     },
     loadProperty({commit}, propertyId) {
-        return firestore.collection('properties').doc(propertyId).get().then(doc => {
-            return {...doc.data(), id: doc.id};
+        return getFirestore().then(firestore => {
+            return firestore.collection('properties').doc(propertyId).get().then(doc => {
+                return {...doc.data(), id: doc.id};
+            });
         });
     },
     removeProperty({commit}, propertyId) {
-        return firestore.collection('properties').doc(propertyId).delete();
+        return getFirestore().then(firestore => {
+            return firestore.collection('properties').doc(propertyId).delete();
+        });
     }
 };
 

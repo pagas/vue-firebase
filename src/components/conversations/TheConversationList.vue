@@ -41,8 +41,10 @@
                 if (this.conversationListener) {
                     this.conversationListener();
                 }
-                this.conversationListener = conversationService.listenToNewConversations(this.$store.getters.user.id, newVisible, (response) => {
+                conversationService.listenToNewConversations(this.$store.getters.user.id, newVisible, (response) => {
                     this.conversations = response;
+                }).then(listener => {
+                    this.conversationListener = listener;
                 })
             }
         },

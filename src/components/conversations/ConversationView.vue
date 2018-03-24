@@ -60,8 +60,10 @@
             }
         },
         created() {
-            this.userListener = conversationService.listenToNewUses(this.conversationId, (response) => {
+            conversationService.listenToNewUses(this.conversationId, (response) => {
                 this.conversationUsers = response;
+            }).then(listener => {
+                this.userListener = listener;
             })
 
             conversationApi.getConversation(this.conversationId).then(response => {

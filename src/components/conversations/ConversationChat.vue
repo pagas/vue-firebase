@@ -58,8 +58,10 @@
                 if (this.messagesListener) {
                     this.messagesListener();
                 }
-                this.messagesListener = messagesApi.listenToMessages(this.conversation.id, newVisible, (response) => {
+                messagesApi.listenToMessages(this.conversation.id, newVisible, (response) => {
                     this.messages = response;
+                }).then(listener => {
+                    this.messagesListener = listener;
                 })
             }
         },
